@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚡ 3초 유튜브 초간단 요약기 (초보자 전용)</title>
+<title>유튜브 핵심 3줄 요약기 · 5개국어</title>
+<meta name="description" content="긴 유튜브 영상의 핵심을 3줄 카드로 정리합니다. 한국어·영어·일본어·중국어·스페인어 지원.">
+<meta property="og:title" content="유튜브 핵심 3줄 요약기 · 5개국어">
+<meta property="og:description" content="긴 유튜브 영상의 핵심을 3줄 카드로. 5개 언어 지원.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23090d16'/%3E%3Ctext x='50' y='70' font-size='58' text-anchor='middle' fill='%23f59e0b' font-family='sans-serif' font-weight='bold'%3E3%3C/text%3E%3C/svg%3E">
 <style>
   :root {
     --gold: #f59e0b;
@@ -15,25 +20,58 @@
     --text: #ffffff;
     --text-sub: #94a3b8;
     --green: #10b981;
+    --blue: #2563eb;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Malgun Gothic", "Segoe UI", "Hiragino Sans", "Microsoft YaHei", sans-serif; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    padding: 30px 16px;
+    padding: 22px 16px 40px;
+    overflow-x: hidden;
   }
   .app-container {
     max-width: 760px;
     width: 100%;
+    min-width: 0;
+  }
+
+  /* 언어 전환 바 */
+  .lang-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .lang-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #2b3a5c;
+    color: #cbd5e1;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+  .lang-btn:hover { border-color: var(--gold); color: #fff; }
+  .lang-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #111827;
+    box-shadow: 0 0 14px var(--gold-glow);
   }
 
   /* 헤더 */
   .header {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
   .badge {
     display: inline-block;
@@ -47,15 +85,21 @@
     margin-bottom: 12px;
   }
   h1 {
-    font-size: 32px;
+    font-size: clamp(24px, 7vw, 32px);
     font-weight: 900;
     letter-spacing: -0.5px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    line-height: 1.28;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
   h1 span { color: var(--gold); }
   p.sub {
     color: var(--text-sub);
-    font-size: 16px;
+    font-size: 15px;
+    line-height: 1.55;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 
   /* 메인 카드 */
@@ -63,20 +107,22 @@
     background: var(--card);
     border: 2px solid var(--card-border);
     border-radius: 20px;
-    padding: 28px;
+    padding: 24px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    margin-bottom: 24px;
+    margin-bottom: 22px;
   }
 
-  /* 1단계: 링크 넣는 곳 */
+  /* 단계 라벨 */
   .step-label {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
     color: var(--gold);
     margin-bottom: 10px;
+    line-height: 1.4;
+    word-break: keep-all;
   }
   .step-num {
     background: var(--gold);
@@ -89,6 +135,7 @@
     justify-content: center;
     font-size: 14px;
     font-weight: 900;
+    flex-shrink: 0;
   }
   .input-wrapper {
     display: flex;
@@ -97,66 +144,66 @@
   }
   .url-input {
     flex: 1;
+    min-width: 0;
     background: #090d16;
     border: 2px solid var(--gold);
     border-radius: 12px;
-    padding: 16px 18px;
+    padding: 15px 16px;
     color: #fff;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     outline: none;
     box-shadow: 0 0 15px var(--gold-glow);
     transition: all 0.2s;
   }
-  .url-input:focus {
-    box-shadow: 0 0 25px rgba(245, 158, 11, 0.7);
-  }
+  .url-input::placeholder { color: #64748b; font-weight: 500; }
+  .url-input:focus { box-shadow: 0 0 25px rgba(245, 158, 11, 0.7); }
   .paste-btn {
     background: #1e293b;
     border: 1px solid #334155;
     color: #cbd5e1;
-    padding: 0 18px;
+    padding: 0 16px;
     border-radius: 12px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .paste-btn:hover { background: #334155; color: #fff; }
 
-  /* 예시 테스트 링크 버튼 */
+  /* 예시 샘플 버튼 */
   .sample-box {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 24px;
+    gap: 6px;
+    margin-bottom: 22px;
   }
   .sample-label { font-size: 12px; color: var(--text-sub); }
   .sample-btn {
     background: rgba(255,255,255,0.06);
     border: 1px dashed #475569;
     color: #94a3b8;
-    padding: 4px 10px;
+    padding: 5px 10px;
     border-radius: 6px;
     font-size: 12px;
     cursor: pointer;
     transition: all 0.15s;
+    line-height: 1.3;
   }
-  .sample-btn:hover {
-    color: var(--gold);
-    border-color: var(--gold);
-  }
+  .sample-btn:hover { color: var(--gold); border-color: var(--gold); }
 
-  /* 2단계: 거대 요약 버튼 */
+  /* 요약 버튼 */
   .action-btn {
     width: 100%;
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: #000;
     border: none;
     border-radius: 14px;
-    padding: 18px;
-    font-size: 20px;
+    padding: 17px;
+    font-size: 18px;
     font-weight: 900;
     cursor: pointer;
     box-shadow: 0 6px 25px var(--gold-glow);
@@ -165,23 +212,16 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    line-height: 1.3;
   }
-  .action-btn:hover {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 35px rgba(245, 158, 11, 0.6);
-  }
+  .action-btn:hover { background: linear-gradient(135deg, #fbbf24, #f59e0b); transform: translateY(-2px); }
   .action-btn:active { transform: translateY(0); }
+  .action-btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 
-  /* 로딩 상태 */
-  .loading-box {
-    display: none;
-    text-align: center;
-    padding: 24px 0;
-  }
+  /* 로딩 */
+  .loading-box { display: none; text-align: center; padding: 22px 0; }
   .spinner {
-    width: 36px;
-    height: 36px;
+    width: 34px; height: 34px;
     border: 4px solid #334155;
     border-top-color: var(--gold);
     border-radius: 50%;
@@ -189,13 +229,14 @@
     margin: 0 auto 12px auto;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; font-weight: 700; color: #fbbf24; }
 
-  /* 3단계: 결과 박스 */
+  /* 결과 */
   .result-box {
     display: none;
-    margin-top: 24px;
+    margin-top: 22px;
     border-top: 1px solid var(--card-border);
-    padding-top: 24px;
+    padding-top: 20px;
     animation: fadeIn 0.3s ease-in-out;
   }
   @keyframes fadeIn {
@@ -205,428 +246,938 @@
 
   .video-preview {
     display: flex;
-    gap: 14px;
+    gap: 12px;
     background: #090d16;
     border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 12px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     align-items: center;
   }
   .thumb-img {
-    width: 120px;
-    height: 68px;
+    width: 110px;
+    height: 62px;
     object-fit: cover;
     border-radius: 8px;
     background: #1e293b;
     flex-shrink: 0;
   }
+  .video-info { min-width: 0; }
   .video-info h3 {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     color: #fff;
     margin-bottom: 4px;
     line-height: 1.4;
+    overflow-wrap: break-word;
   }
-  .video-info p {
-    font-size: 12px;
-    color: var(--text-sub);
-  }
+  .video-info p { font-size: 12px; color: var(--text-sub); overflow-wrap: break-word; }
 
   .summary-card {
     background: #0d1526;
     border: 1px solid #233152;
     border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
   }
   .summary-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
     color: #fbbf24;
     margin-bottom: 14px;
     display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
     justify-content: space-between;
     align-items: center;
   }
-  .summary-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+  .summary-tag { font-size: 11px; color: #94a3b8; font-weight: 600; }
+  .summary-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
   .summary-item {
     display: flex;
     gap: 10px;
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 14.5px;
+    line-height: 1.65;
     color: #f1f5f9;
+    overflow-wrap: break-word;
   }
   .summary-num {
     background: rgba(245, 158, 11, 0.2);
     color: #fbbf24;
     font-weight: 800;
-    width: 24px;
-    height: 24px;
+    width: 22px; height: 22px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     font-size: 12px;
+    margin-top: 2px;
+  }
+  .sample-note {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed #233152;
+    font-size: 11.5px;
+    color: #7c8ba3;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+
+  /* 정직 안내 카드 */
+  .notice-card {
+    display: none;
+    background: #1a1508;
+    border: 1px solid #a16207;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .notice-card h3 {
+    font-size: 15px;
+    font-weight: 800;
+    color: #fbbf24;
+    margin-bottom: 10px;
+    line-height: 1.45;
+    word-break: keep-all;
+  }
+  .notice-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #e2e8f0;
+    word-break: keep-all;
+  }
+  .notice-foot {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #a16207;
+    font-size: 12.5px;
+    color: #fcd34d;
+    line-height: 1.6;
+    word-break: keep-all;
   }
 
   .copy-btn-large {
     width: 100%;
-    background: #2563eb;
+    background: var(--blue);
     color: white;
     border: none;
     border-radius: 10px;
     padding: 14px;
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 800;
     cursor: pointer;
     transition: all 0.2s;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    line-height: 1.4;
   }
   .copy-btn-large:hover { background: #1d4ed8; }
   .copy-btn-large.copied { background: var(--green) !important; }
 
-  /* 💰 수익화 배너 (돈으로 연결) */
-  .monetize-card {
+  /* 문의 카드 */
+  .contact-card {
     background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 2px solid var(--gold);
+    border: 2px solid #334155;
     border-radius: 16px;
-    padding: 22px;
+    padding: 22px 20px;
     text-align: center;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
   }
-  .monetize-tag {
-    display: inline-block;
-    background: #ef4444;
-    color: white;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 3px 10px;
-    border-radius: 999px;
-    margin-bottom: 8px;
-  }
-  .monetize-card h2 {
-    font-size: 19px;
+  .contact-card h2 {
+    font-size: 17px;
     font-weight: 800;
     color: #fff;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    word-break: keep-all;
   }
-  .monetize-card p {
+  .contact-card p {
     font-size: 13px;
     color: #94a3b8;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
+    line-height: 1.65;
+    word-break: keep-all;
   }
-  .bank-box {
-    background: #090d16;
-    border: 1px dashed var(--gold);
-    border-radius: 10px;
-    padding: 12px 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-  .bank-info {
-    font-size: 15px;
-    font-weight: 800;
-    color: #fbbf24;
-  }
-  .bank-copy-btn {
-    background: var(--gold);
-    color: #000;
+  .kakao-btn {
+    background: #fee500;
+    color: #3c1e1e;
     border: none;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 800;
+    border-radius: 10px;
+    padding: 13px 20px;
+    font-size: 14px;
+    font-weight: 900;
     cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1.4;
+    max-width: 100%;
   }
-  .bank-copy-btn:hover { background: #fde08d; }
+  .kakao-btn:hover { background: #ffe93d; transform: translateY(-1px); }
+  .kakao-id { margin-top: 12px; font-size: 12.5px; color: #64748b; }
+  .kakao-id strong { color: #fbbf24; letter-spacing: 0.5px; }
 
   /* 토스트 */
   .toast {
     position: fixed;
-    bottom: 24px;
+    bottom: 22px;
     left: 50%;
-    transform: translateX(-50%) translateY(100px);
+    transform: translateX(-50%) translateY(120px);
     background: var(--green);
     color: white;
-    padding: 10px 24px;
-    border-radius: 999px;
+    padding: 11px 20px;
+    border-radius: 14px;
     font-weight: 700;
     font-size: 13px;
+    line-height: 1.45;
     opacity: 0;
     transition: all 0.3s;
     pointer-events: none;
     z-index: 9999;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    text-align: center;
   }
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* 모바일 */
+  @media (max-width: 480px) {
+    body { padding: 18px 12px 36px; }
+    .main-card { padding: 18px 15px; border-radius: 16px; }
+    .input-wrapper { flex-direction: column; }
+    .paste-btn { padding: 11px 16px; width: 100%; }
+    .thumb-img { width: 88px; height: 50px; }
+    .sample-label { width: 100%; margin-bottom: 2px; }
+    .lang-btn { padding: 7px 10px; font-size: 12px; }
+    .summary-card { padding: 15px; }
+    .notice-card { padding: 15px; }
+    .summary-item { font-size: 14px; }
   }
 </style>
 </head>
 <body>
 
 <div class="app-container">
+
+  <!-- 언어 전환 -->
+  <div class="lang-bar" id="langBar" role="group" aria-label="Language">
+    <button class="lang-btn active" data-lang="ko" type="button">🇰🇷 한국어</button>
+    <button class="lang-btn" data-lang="en" type="button">🇺🇸 English</button>
+    <button class="lang-btn" data-lang="ja" type="button">🇯🇵 日本語</button>
+    <button class="lang-btn" data-lang="zh" type="button">🇨🇳 中文</button>
+    <button class="lang-btn" data-lang="es" type="button">🇪🇸 Español</button>
+  </div>
+
+  <!-- 헤더 -->
   <div class="header">
-    <div class="badge">⚡ 1초 초고속 AI 엔진</div>
-    <h1>유튜브 <span>3초 초간단</span> 요약기</h1>
-    <p class="sub">1시간짜리 지루한 영상도 단 3초 만에 3줄 카드로 완벽 요약!</p>
+    <div class="badge" data-i18n="badge">🌍 5개국어 지원 · 무료 체험</div>
+    <h1 data-i18n-html="title">유튜브 <span>핵심 3줄</span> 요약기</h1>
+    <p class="sub" data-i18n="sub">긴 영상의 핵심만 3줄 카드로 정리합니다. 한국어 · 영어 · 일본어 · 중국어 · 스페인어로 바로 바꿔 볼 수 있어요.</p>
   </div>
 
   <div class="main-card">
     <!-- 1단계 -->
     <div class="step-label">
       <span class="step-num">1</span>
-      <span>유튜브 주소(링크) 붙여넣기</span>
-    </div>
-    
-    <div class="input-wrapper">
-      <input type="text" id="urlInput" class="url-input" placeholder="여기에 유튜브 링크를 붙여넣으세요 (Ctrl + V)" autocomplete="off">
-      <button class="paste-btn" onclick="pasteFromClipboard()">📋 붙여넣기</button>
+      <span data-i18n="step1">유튜브 주소(링크) 붙여넣기</span>
     </div>
 
-    <!-- 시험용 샘플 링크 버튼 -->
+    <div class="input-wrapper">
+      <input type="text" id="urlInput" class="url-input" data-i18n-ph="inputPh"
+             placeholder="여기에 유튜브 링크를 붙여넣으세요" autocomplete="off" inputmode="url" spellcheck="false">
+      <button class="paste-btn" id="pasteBtn" onclick="pasteFromClipboard()" type="button" data-i18n="pasteBtn">📋 붙여넣기</button>
+    </div>
+
+    <!-- 샘플 -->
     <div class="sample-box">
-      <span class="sample-label">시험해보기:</span>
-      <span class="sample-btn" onclick="setSample('https://www.youtube.com/watch?v=dQw4w9WgXcQ')">🎵 릭 애스틀리 팝송</span>
-      <span class="sample-btn" onclick="setSample('https://www.youtube.com/watch?v=7wsb13mPZ00')">💼 주식/재테크 강의</span>
-      <span class="sample-btn" onclick="setSample('https://www.youtube.com/watch?v=0e3GPea1Tyg')">🤖 AI 혁명 다큐</span>
+      <span class="sample-label" data-i18n="sampleLabel">시험해보기:</span>
+      <span class="sample-btn" data-sample="9bZkp7q19f0" data-i18n="sample1">🎵 강남스타일 뮤직비디오</span>
+      <span class="sample-btn" data-sample="dQw4w9WgXcQ" data-i18n="sample2">🎸 릭 애스틀리 팝송</span>
+      <span class="sample-btn" data-sample="0e3GPea1Tyg" data-i18n="sample3">🎬 미스터비스트 오징어게임</span>
     </div>
 
     <!-- 2단계 -->
-    <div class="step-label" style="margin-top: 14px;">
+    <div class="step-label" style="margin-top: 12px;">
       <span class="step-num">2</span>
-      <span>아래 황금 버튼을 누르세요</span>
+      <span data-i18n="step2">아래 노란 버튼을 누르세요</span>
     </div>
-    
-    <button class="action-btn" id="startBtn" onclick="runSimpleSummary()">
-      <span>⚡ 3초 요약하기 (클릭)</span>
+
+    <button class="action-btn" id="startBtn" onclick="runSummary()" type="button">
+      <span data-i18n="startBtn">⚡ 요약하기 (클릭)</span>
     </button>
 
-    <!-- 로딩 애니메이션 -->
+    <!-- 로딩 -->
     <div class="loading-box" id="loadingBox">
       <div class="spinner"></div>
-      <div style="font-size: 14px; font-weight: 700; color: #fbbf24;">AI가 영상을 초고속 분석 중입니다... (약 1.5초)</div>
+      <div class="loading-text" data-i18n="loading">유튜브에서 영상 정보를 확인하는 중입니다...</div>
     </div>
 
-    <!-- 3단계 결과 영역 -->
+    <!-- 결과 -->
     <div class="result-box" id="resultBox">
       <div class="step-label" style="margin-bottom: 14px;">
         <span class="step-num">3</span>
-        <span>요약 결과가 완성되었습니다!</span>
+        <span id="step3Text" data-i18n="step3ok">요약 결과가 완성되었습니다!</span>
       </div>
 
       <!-- 영상 미리보기 -->
       <div class="video-preview">
-        <img src="" id="resThumb" class="thumb-img" alt="썸네일">
+        <img src="" id="resThumb" class="thumb-img" alt="">
         <div class="video-info">
-          <h3 id="resTitle">영상 제목이 들어갑니다</h3>
-          <p id="resAuthor">채널명</p>
+          <h3 id="resTitle">YouTube</h3>
+          <p id="resAuthor"></p>
         </div>
       </div>
 
-      <!-- 3줄 핵심 요약 카드 -->
-      <div class="summary-card">
+      <!-- 3줄 요약 카드 -->
+      <div class="summary-card" id="summaryCard">
         <div class="summary-title">
-          <span>🎯 한눈에 보는 3줄 핵심 결론</span>
-          <span style="font-size: 12px; color: #94a3b8;">1시간 영상 압축본</span>
+          <span data-i18n="summaryTitle">🎯 한눈에 보는 3줄 핵심 요약</span>
+          <span class="summary-tag" data-i18n="summaryTag">영상 핵심 정리</span>
         </div>
         <ul class="summary-list">
-          <li class="summary-item">
-            <span class="summary-num">1</span>
-            <span id="sum1">첫 번째 핵심 요약 내용이 여기에 깔끔하게 정리됩니다.</span>
-          </li>
-          <li class="summary-item">
-            <span class="summary-num">2</span>
-            <span id="sum2">두 번째 핵심 실행 포인트 및 원리가 여기에 나옵니다.</span>
-          </li>
-          <li class="summary-item">
-            <span class="summary-num">3</span>
-            <span id="sum3">세 번째 최종 결론 및 즉시 행동 지침입니다.</span>
-          </li>
+          <li class="summary-item"><span class="summary-num">1</span><span id="sum1"></span></li>
+          <li class="summary-item"><span class="summary-num">2</span><span id="sum2"></span></li>
+          <li class="summary-item"><span class="summary-num">3</span><span id="sum3"></span></li>
         </ul>
+        <div class="sample-note" data-i18n="sampleNote">※ 이 3개 샘플 영상의 요약은 실제 영상 내용을 바탕으로 미리 작성해 둔 예시입니다.</div>
       </div>
 
-      <button class="copy-btn-large" id="copyBtn" onclick="copyResult()">
-        <span>📋 요약 내용 전체 복사하기 (카톡/메모장용)</span>
+      <!-- 정직 안내 카드 -->
+      <div class="notice-card" id="noticeCard">
+        <h3 id="noticeTitle"></h3>
+        <p id="noticeBody"></p>
+        <div class="notice-foot" id="noticeFoot"></div>
+      </div>
+
+      <button class="copy-btn-large" id="copyBtn" onclick="copyResult()" type="button">
+        <span data-i18n="copyBtn">📋 요약 내용 전체 복사하기</span>
       </button>
     </div>
   </div>
 
-  <!-- 💰 수익화 배너 (돈으로 연결 파이프라인) -->
-  <div class="monetize-card">
-    <div class="monetize-tag">👑 VIP 프리미엄 서비스</div>
-    <h2>상위 1% 전용: 무제한 요약 & 글로벌 쇼츠 대본 자동 제작</h2>
-    <p>매일 2시간씩 영상 보며 시간 낭비하지 마세요. 월 9,900원으로 평생 시간을 10배 벌어드립니다!</p>
-    
-    
-    <div style="font-size: 12px; color: #64748b;">(입금 후 카카오톡 또는 문자로 '신청' 남겨주시면 즉시 VIP 승인됩니다)</div>
+  <!-- 문의 카드 -->
+  <div class="contact-card">
+    <h2 data-i18n="contactTitle">💬 맞춤 AI 도구 · 홈페이지 제작 문의</h2>
+    <p data-i18n="contactDesc">이런 요약기를 내 홈페이지나 가게에 붙이고 싶으시면 편하게 연락 주세요. 필요한 기능만 골라 만들어 드립니다.</p>
+    <button class="kakao-btn" id="kakaoBtn" onclick="copyKakao()" type="button" data-i18n="contactBtn">카카오톡 ID yang3919 복사하기</button>
+    <div class="kakao-id">KakaoTalk ID: <strong>yang3919</strong></div>
   </div>
 </div>
 
-<div class="toast" id="toast">복사 완료! ✨</div>
+<div class="toast" id="toast"></div>
 
 <script>
-// 유튜브 Video ID 추출 함수
+/* ==============================
+   1. 다국어 문구
+   ============================== */
+const SITE_URL = 'https://a90915719-hue.github.io/youtube-summarizer/';
+const KAKAO_ID = 'yang3919';
+
+const I18N = {
+  ko: {
+    docTitle: '유튜브 핵심 3줄 요약기 · 5개국어',
+    badge: '🌍 5개국어 지원 · 무료 체험',
+    title: '유튜브 <span>핵심 3줄</span> 요약기',
+    sub: '긴 영상의 핵심만 3줄 카드로 정리합니다. 한국어 · 영어 · 일본어 · 중국어 · 스페인어로 바로 바꿔 볼 수 있어요.',
+    step1: '유튜브 주소(링크) 붙여넣기',
+    inputPh: '여기에 유튜브 링크를 붙여넣으세요',
+    pasteBtn: '📋 붙여넣기',
+    sampleLabel: '시험해보기:',
+    sample1: '🎵 강남스타일 뮤직비디오',
+    sample2: '🎸 릭 애스틀리 팝송',
+    sample3: '🎬 미스터비스트 오징어게임',
+    step2: '아래 노란 버튼을 누르세요',
+    startBtn: '⚡ 요약하기 (클릭)',
+    loading: '유튜브에서 영상 정보를 확인하는 중입니다...',
+    step3ok: '요약 결과가 완성되었습니다!',
+    step3info: '확인 결과입니다',
+    summaryTitle: '🎯 한눈에 보는 3줄 핵심 요약',
+    summaryTag: '영상 핵심 정리',
+    sampleNote: '※ 이 3개 샘플 영상의 요약은 실제 영상 내용을 바탕으로 미리 작성해 둔 예시입니다.',
+    copyBtn: '📋 요약 내용 전체 복사하기',
+    copyDone: '✅ 복사 완료! (카톡/메모장에 붙여넣으세요)',
+    copyHeader: '📌 [유튜브 3줄 핵심 요약]',
+    copyLinkLabel: '요약기 무료 체험:',
+    contactTitle: '💬 맞춤 AI 도구 · 홈페이지 제작 문의',
+    contactDesc: '이런 요약기를 내 홈페이지나 가게에 붙이고 싶으시면 편하게 연락 주세요. 필요한 기능만 골라 만들어 드립니다.',
+    contactBtn: '카카오톡 ID yang3919 복사하기',
+    noticeTitle: '🔍 이 영상은 정보만 확인했어요',
+    noticeBody: '제목·채널·썸네일은 유튜브에서 실시간으로 가져왔습니다. 다만 영상 속 실제 자막을 읽어서 AI로 요약하려면 서버와 AI 연결이 필요한데, 지금 이 페이지는 화면만 보여 주는 무료 정적 사이트라 그 기능이 없습니다. 그래서 없는 내용을 지어내지 않고 여기서 멈췄습니다. 위의 샘플 3개는 실제 영상 내용에 맞춘 요약이 준비되어 있으니 눌러서 확인해 보세요.',
+    noticeFoot: '실제 자막 요약 연동을 원하시면 카카오톡 yang3919 로 문의 주세요.',
+    notFoundTitle: '🔍 이 주소의 영상을 찾지 못했습니다',
+    notFoundBody: '유튜브에서 영상 정보를 가져오지 못했습니다. 영상이 삭제되었거나 주소가 잘못된 경우입니다. 주소를 다시 확인해 주세요.',
+    notFoundFoot: '샘플 버튼을 누르면 정상 작동하는 요약을 바로 볼 수 있습니다.',
+    toastCopied: '복사 완료! ✨',
+    toastPasted: '클립보드에서 주소를 붙여넣었습니다 ✨',
+    toastKakao: '카카오톡 ID yang3919 가 복사되었습니다 ✨',
+    toastCopyResult: '요약본이 복사되었습니다! ✨',
+    toastSampleDone: '요약이 준비되었습니다 ✨',
+    toastIgnored: '이 영상은 정보만 확인했어요. 샘플 버튼을 누르면 실제 요약을 볼 수 있습니다 😊',
+    alertBadUrl: '올바른 유튜브 영상 주소를 넣어 주세요.\n예: https://www.youtube.com/watch?v=...',
+    alertPaste: 'Ctrl + V 를 눌러 링크를 붙여넣어 주세요!',
+    alertCopyFail: '복사가 막혔습니다. 내용을 길게 눌러 직접 복사해 주세요.',
+    unknownTitle: '제목을 확인하지 못한 영상',
+    unknownAuthor: '채널 정보 없음'
+  },
+  en: {
+    docTitle: 'YouTube 3-Line Summarizer · 5 Languages',
+    badge: '🌍 5 languages · Free to try',
+    title: 'YouTube <span>3-Line</span> Summarizer',
+    sub: 'The key points of a long video, boiled down to a 3-line card. Switch between Korean, English, Japanese, Chinese and Spanish anytime.',
+    step1: 'Paste a YouTube link',
+    inputPh: 'Paste a YouTube link here',
+    pasteBtn: '📋 Paste',
+    sampleLabel: 'Try one:',
+    sample1: '🎵 Gangnam Style MV',
+    sample2: '🎸 Rick Astley pop song',
+    sample3: '🎬 MrBeast Squid Game',
+    step2: 'Press the yellow button below',
+    startBtn: '⚡ Summarize (click)',
+    loading: 'Checking the video on YouTube...',
+    step3ok: 'Here is your summary!',
+    step3info: 'Here is what we found',
+    summaryTitle: '🎯 The 3-line takeaway',
+    summaryTag: 'Key points',
+    sampleNote: 'Note: the summaries for these 3 sample videos were written in advance based on what the videos actually contain.',
+    copyBtn: '📋 Copy the whole summary',
+    copyDone: '✅ Copied! (paste into a chat or note)',
+    copyHeader: '📌 [YouTube 3-line summary]',
+    copyLinkLabel: 'Free demo:',
+    contactTitle: '💬 Custom AI tools · Website building',
+    contactDesc: 'Want a summarizer like this on your own site or shop? Just get in touch — we build only the features you need.',
+    contactBtn: 'Copy KakaoTalk ID yang3919',
+    noticeTitle: '🔍 We only checked this video\'s details',
+    noticeBody: 'The title, channel and thumbnail were fetched live from YouTube. Reading the actual transcript and summarizing it with AI needs a server and an AI connection — this page is a free static site that only shows the screen, so that feature is not available here. Rather than invent a summary that is not true, we stopped here. The three samples above do have summaries that match the real videos, so try one.',
+    noticeFoot: 'If you want real transcript-based summaries connected, message us on KakaoTalk: yang3919.',
+    notFoundTitle: '🔍 We could not find a video at this address',
+    notFoundBody: 'YouTube did not return any information for this link. The video may have been deleted, or the address may be wrong. Please check the link again.',
+    notFoundFoot: 'Press a sample button to see a summary that works right away.',
+    toastCopied: 'Copied! ✨',
+    toastPasted: 'Link pasted from your clipboard ✨',
+    toastKakao: 'KakaoTalk ID yang3919 copied ✨',
+    toastCopyResult: 'Summary copied! ✨',
+    toastSampleDone: 'Your summary is ready ✨',
+    toastIgnored: 'We only checked this video\'s details. Press a sample button to see a real summary 😊',
+    alertBadUrl: 'Please enter a valid YouTube link.\nExample: https://www.youtube.com/watch?v=...',
+    alertPaste: 'Press Ctrl + V to paste the link!',
+    alertCopyFail: 'Copying was blocked. Press and hold the text to copy it yourself.',
+    unknownTitle: 'Video title unavailable',
+    unknownAuthor: 'Channel unknown'
+  },
+  ja: {
+    docTitle: 'YouTube 3行要約 · 5か国語',
+    badge: '🌍 5か国語対応 · 無料で試せます',
+    title: 'YouTube <span>3行</span>要約ツール',
+    sub: '長い動画の要点だけを3行カードにまとめます。韓国語・英語・日本語・中国語・スペイン語にいつでも切り替えられます。',
+    step1: 'YouTubeのリンクを貼り付ける',
+    inputPh: 'ここにYouTubeのリンクを貼り付けてください',
+    pasteBtn: '📋 貼り付け',
+    sampleLabel: '試してみる:',
+    sample1: '🎵 カンナムスタイル MV',
+    sample2: '🎸 リック・アストリーの曲',
+    sample3: '🎬 MrBeast イカゲーム',
+    step2: '下の黄色いボタンを押してください',
+    startBtn: '⚡ 要約する（クリック）',
+    loading: 'YouTubeで動画の情報を確認しています...',
+    step3ok: '要約ができました！',
+    step3info: '確認した結果です',
+    summaryTitle: '🎯 ひと目でわかる3行の要点',
+    summaryTag: '動画の要点',
+    sampleNote: '※ この3つのサンプル動画の要約は、実際の動画内容にもとづいてあらかじめ作成した例です。',
+    copyBtn: '📋 要約をまとめてコピー',
+    copyDone: '✅ コピーしました！（メモやチャットに貼り付けてください）',
+    copyHeader: '📌 [YouTube 3行要約]',
+    copyLinkLabel: '無料体験:',
+    contactTitle: '💬 オーダーメイドAIツール・ホームページ制作のご相談',
+    contactDesc: 'こんな要約ツールをご自身のサイトやお店に付けたい方は、お気軽にご連絡ください。必要な機能だけをお作りします。',
+    contactBtn: 'KakaoTalk ID yang3919 をコピー',
+    noticeTitle: '🔍 この動画は情報だけ確認しました',
+    noticeBody: 'タイトル・チャンネル・サムネイルはYouTubeからリアルタイムで取得しました。ただし、実際の字幕を読み取ってAIで要約するにはサーバーとAIの接続が必要で、このページは画面だけを表示する無料の静的サイトのため、その機能はありません。ですから、存在しない内容を作らずここで止めています。上の3つのサンプルは実際の動画内容に合った要約を用意していますので、押して試してみてください。',
+    noticeFoot: '実際の字幕要約の連携をご希望の方は、KakaoTalk「yang3919」までご連絡ください。',
+    notFoundTitle: '🔍 このアドレスの動画が見つかりませんでした',
+    notFoundBody: 'YouTubeから動画の情報を取得できませんでした。動画が削除されたか、アドレスが間違っている可能性があります。リンクをもう一度ご確認ください。',
+    notFoundFoot: 'サンプルボタンを押すと、すぐに動く要約が見られます。',
+    toastCopied: 'コピーしました！✨',
+    toastPasted: 'クリップボードからリンクを貼り付けました ✨',
+    toastKakao: 'KakaoTalk ID yang3919 をコピーしました ✨',
+    toastCopyResult: '要約をコピーしました！✨',
+    toastSampleDone: '要約の準備ができました ✨',
+    toastIgnored: 'この動画は情報だけ確認しました。サンプルボタンを押すと実際の要約が見られます 😊',
+    alertBadUrl: '正しいYouTubeのリンクを入力してください。\n例: https://www.youtube.com/watch?v=...',
+    alertPaste: 'Ctrl + V でリンクを貼り付けてください！',
+    alertCopyFail: 'コピーがブロックされました。テキストを長押ししてコピーしてください。',
+    unknownTitle: 'タイトルを確認できなかった動画',
+    unknownAuthor: 'チャンネル情報なし'
+  },
+  zh: {
+    docTitle: 'YouTube 三行总结 · 五种语言',
+    badge: '🌍 支持五种语言 · 免费体验',
+    title: 'YouTube <span>三行</span>总结',
+    sub: '把长视频的要点浓缩成三行卡片。韩语、英语、日语、中文、西班牙语随时切换。',
+    step1: '粘贴 YouTube 链接',
+    inputPh: '在这里粘贴 YouTube 链接',
+    pasteBtn: '📋 粘贴',
+    sampleLabel: '试一试：',
+    sample1: '🎵 江南Style MV',
+    sample2: '🎸 里克·艾斯里 流行金曲',
+    sample3: '🎬 MrBeast 鱿鱼游戏',
+    step2: '点击下面的黄色按钮',
+    startBtn: '⚡ 开始总结（点击）',
+    loading: '正在从 YouTube 获取视频信息……',
+    step3ok: '总结完成！',
+    step3info: '查询结果如下',
+    summaryTitle: '🎯 一眼看懂的三行要点',
+    summaryTag: '视频要点',
+    sampleNote: '※ 这 3 个示例视频的总结是根据视频真实内容提前写好的示例。',
+    copyBtn: '📋 复制完整总结',
+    copyDone: '✅ 已复制！（可粘贴到聊天或备忘录）',
+    copyHeader: '📌 [YouTube 三行总结]',
+    copyLinkLabel: '免费体验：',
+    contactTitle: '💬 定制 AI 工具 · 网站制作咨询',
+    contactDesc: '想把这样的总结工具装到自己的网站或店铺？欢迎随时联系，只做你需要的功能。',
+    contactBtn: '复制 KakaoTalk ID：yang3919',
+    noticeTitle: '🔍 这个视频我们只核实了信息',
+    noticeBody: '标题、频道和封面是从 YouTube 实时获取的。但要读取视频里的真实字幕并用 AI 总结，需要服务器和 AI 接口；本页面只是展示界面的免费静态网站，没有这个功能。所以我们不会编造内容，就停在这里。上面的 3 个示例都准备了与真实内容相符的总结，点一下就能看到。',
+    noticeFoot: '如需接入真实的字幕总结功能，请联系 KakaoTalk：yang3919。',
+    notFoundTitle: '🔍 没有找到这个地址的视频',
+    notFoundBody: '无法从 YouTube 获取视频信息。视频可能已被删除，或者链接有误。请再确认一下链接。',
+    notFoundFoot: '点击示例按钮，就能马上看到可以正常使用的总结。',
+    toastCopied: '已复制！✨',
+    toastPasted: '已从剪贴板粘贴链接 ✨',
+    toastKakao: '已复制 KakaoTalk ID yang3919 ✨',
+    toastCopyResult: '已复制总结！✨',
+    toastSampleDone: '总结已准备好 ✨',
+    toastIgnored: '这个视频我们只核实了信息。点示例按钮就能看到真正的总结 😊',
+    alertBadUrl: '请输入正确的 YouTube 链接。\n例如：https://www.youtube.com/watch?v=...',
+    alertPaste: '请按 Ctrl + V 粘贴链接！',
+    alertCopyFail: '复制被拦截了，请长按文字手动复制。',
+    unknownTitle: '未能确认标题的视频',
+    unknownAuthor: '无频道信息'
+  },
+  es: {
+    docTitle: 'Resumidor de YouTube en 3 líneas · 5 idiomas',
+    badge: '🌍 5 idiomas · Prueba gratis',
+    title: 'Resumidor de YouTube en <span>3 líneas</span>',
+    sub: 'Lo esencial de un video largo, resumido en una tarjeta de 3 líneas. Cambia entre coreano, inglés, japonés, chino y español cuando quieras.',
+    step1: 'Pega un enlace de YouTube',
+    inputPh: 'Pega aquí el enlace de YouTube',
+    pasteBtn: '📋 Pegar',
+    sampleLabel: 'Prueba uno:',
+    sample1: '🎵 Gangnam Style MV',
+    sample2: '🎸 Canción de Rick Astley',
+    sample3: '🎬 MrBeast El Juego del Calamar',
+    step2: 'Pulsa el botón amarillo de abajo',
+    startBtn: '⚡ Resumir (clic)',
+    loading: 'Consultando el video en YouTube...',
+    step3ok: '¡Aquí tienes el resumen!',
+    step3info: 'Esto es lo que encontramos',
+    summaryTitle: '🎯 Las 3 líneas clave',
+    summaryTag: 'Puntos clave',
+    sampleNote: 'Nota: los resúmenes de estos 3 videos de ejemplo se escribieron de antemano según el contenido real de cada video.',
+    copyBtn: '📋 Copiar todo el resumen',
+    copyDone: '✅ ¡Copiado! (pégalo en un chat o una nota)',
+    copyHeader: '📌 [Resumen de YouTube en 3 líneas]',
+    copyLinkLabel: 'Prueba gratis:',
+    contactTitle: '💬 Herramientas de IA a medida · Páginas web',
+    contactDesc: 'Si quieres un resumidor así en tu web o tu negocio, escríbenos sin compromiso. Hacemos solo lo que necesitas.',
+    contactBtn: 'Copiar el ID de KakaoTalk yang3919',
+    noticeTitle: '🔍 Solo verificamos los datos de este video',
+    noticeBody: 'El título, el canal y la miniatura se obtuvieron de YouTube en tiempo real. Pero leer los subtítulos reales del video y resumirlos con IA requiere un servidor y una conexión de IA; esta página es un sitio estático gratuito que solo muestra la pantalla, así que esa función no está disponible aquí. Por eso no inventamos un resumen: nos detenemos aquí. Los tres ejemplos de arriba sí tienen resúmenes que corresponden al contenido real, pruébalos.',
+    noticeFoot: 'Si quieres conectar resúmenes reales a partir de subtítulos, escríbenos por KakaoTalk: yang3919.',
+    notFoundTitle: '🔍 No encontramos ningún video en esta dirección',
+    notFoundBody: 'YouTube no devolvió información para este enlace. Puede que el video se haya eliminado o que la dirección esté mal. Revisa el enlace otra vez.',
+    notFoundFoot: 'Pulsa un botón de ejemplo para ver un resumen que sí funciona.',
+    toastCopied: '¡Copiado! ✨',
+    toastPasted: 'Enlace pegado desde el portapapeles ✨',
+    toastKakao: 'ID de KakaoTalk yang3919 copiado ✨',
+    toastCopyResult: '¡Resumen copiado! ✨',
+    toastSampleDone: 'Tu resumen está listo ✨',
+    toastIgnored: 'Solo verificamos los datos de este video. Pulsa un botón de ejemplo para ver un resumen real 😊',
+    alertBadUrl: 'Escribe un enlace válido de YouTube.\nEjemplo: https://www.youtube.com/watch?v=...',
+    alertPaste: '¡Pulsa Ctrl + V para pegar el enlace!',
+    alertCopyFail: 'Se bloqueó la copia. Mantén pulsado el texto para copiarlo tú.',
+    unknownTitle: 'No pudimos confirmar el título',
+    unknownAuthor: 'Canal desconocido'
+  }
+};
+
+/* ==============================
+   2. 샘플 영상 (실제 내용 기준 요약)
+   ============================== */
+const SAMPLES = {
+  '9bZkp7q19f0': {
+    title: 'PSY - GANGNAM STYLE(강남스타일) M/V',
+    author: 'officialpsy',
+    lines: {
+      ko: [
+        '2012년 싸이(PSY)가 발표한 K팝 댄스곡으로, 화려한 강남의 생활상을 유쾌하게 풍자한 노래입니다.',
+        '\'말춤\'으로 불리는 독특한 안무와 중독적인 후렴이 세계로 퍼지며 하나의 인터넷 밈이 되었습니다.',
+        '유튜브 역사상 최초로 조회수 10억 회를 돌파한 영상으로, K팝이 전 세계에 알려진 계기가 되었습니다.'
+      ],
+      en: [
+        'Released by PSY in 2012, it is a K-pop dance track that playfully satirizes the flashy lifestyle of Seoul\'s Gangnam district.',
+        'Its signature "horse-riding dance" and catchy chorus spread around the world and turned into an internet meme.',
+        'It was the first YouTube video ever to pass 1 billion views, and it opened the door for K-pop worldwide.'
+      ],
+      ja: [
+        '2012年にPSYが発表したK-POPダンス曲で、ソウル・カンナムの華やかな暮らしぶりをユーモラスに風刺した歌です。',
+        '「馬ダンス」と呼ばれる独特の振付と中毒性のあるサビが世界に広がり、インターネットのミームになりました。',
+        'YouTube史上初めて再生回数10億回を突破した動画で、K-POPが世界に知られるきっかけになりました。'
+      ],
+      zh: [
+        '这是 PSY（鸟叔）2012 年发行的 K-pop 舞曲，用幽默的方式讽刺了首尔江南区浮华的生活方式。',
+        '被称为「骑马舞」的独特舞步和洗脑的副歌传遍全球，成了一个网络梗。',
+        '它是 YouTube 史上第一支播放量突破 10 亿次的视频，也让 K-pop 走向了全世界。'
+      ],
+      es: [
+        'Es un tema dance de K-pop que PSY lanzó en 2012 y que satiriza con humor el estilo de vida llamativo del distrito de Gangnam, en Seúl.',
+        'Su peculiar "baile del caballo" y su estribillo pegadizo se extendieron por todo el mundo y se convirtieron en un meme de internet.',
+        'Fue el primer video de YouTube en superar los 1.000 millones de reproducciones y abrió la puerta del K-pop al mundo.'
+      ]
+    }
+  },
+  'dQw4w9WgXcQ': {
+    title: 'Rick Astley - Never Gonna Give You Up (Official Video)',
+    author: 'Rick Astley',
+    lines: {
+      ko: [
+        '1987년 릭 애스틀리의 데뷔 싱글로, 25개국에서 1위를 차지한 1980년대 대표 팝 히트곡입니다.',
+        '가사는 "너를 절대 포기하지도, 실망시키지도 않겠다"는 한결같은 사랑의 약속을 직설적으로 담았습니다.',
+        '2000년대 후반 \'릭롤링\' 밈으로 다시 전 세계에 퍼지며 조회수 15억 회를 넘어선 인터넷 문화의 상징입니다.'
+      ],
+      en: [
+        'Rick Astley\'s 1987 debut single, a defining 80s pop hit that reached No. 1 in 25 countries.',
+        'The lyrics make a plain, unwavering promise of love: "Never gonna give you up, never gonna let you down."',
+        'Revived worldwide in the late 2000s as the "rickroll" meme, it has passed 1.5 billion views and become a piece of internet culture.'
+      ],
+      ja: [
+        '1987年にリリースされたリック・アストリーのデビューシングルで、25か国で1位を獲得した80年代を代表するポップヒットです。',
+        '歌詞は「君を絶対に諦めない、失望させない」という揺るぎない愛の約束をまっすぐに歌っています。',
+        '2000年代後半に「リックロール」のミームとして世界中に再び広がり、再生回数15億回を超えるインターネット文化の象徴になりました。'
+      ],
+      zh: [
+        '这是里克·艾斯里 1987 年的出道单曲，曾在 25 个国家拿下冠军，是 80 年代的代表性流行金曲。',
+        '歌词直白地许下「永远不会放弃你、不会让你失望」的专一承诺。',
+        '2000 年代后期它以「瑞克摇」的网络梗再次传遍全球，播放量已超过 15 亿次，成了互联网文化的一部分。'
+      ],
+      es: [
+        'Es el single debut de Rick Astley de 1987, un éxito pop emblemático de los 80 que llegó al número 1 en 25 países.',
+        'La letra promete un amor firme y sin rodeos: "nunca te voy a abandonar, nunca te voy a decepcionar".',
+        'Revivió en todo el mundo a finales de los 2000 con el meme del "rickroll" y ya supera los 1.500 millones de reproducciones.'
+      ]
+    }
+  },
+  '0e3GPea1Tyg': {
+    title: '$456,000 Squid Game In Real Life!',
+    author: 'MrBeast',
+    lines: {
+      ko: [
+        '미스터비스트가 넷플릭스 \'오징어 게임\'을 실제로 재현한 영상으로, 456명의 참가자가 번호가 붙은 트레이닝복을 입고 등장합니다.',
+        '무궁화 꽃이 피었습니다, 달고나 뽑기, 줄다리기 등 드라마 속 게임을 그대로 진행하고 탈락자는 현장에서 빠집니다.',
+        '최종 우승자에게 실제 상금 45만 6천 달러(약 6억 원대)를 지급해 큰 화제를 모았습니다.'
+      ],
+      en: [
+        'MrBeast recreates Netflix\'s "Squid Game" for real, with 456 players arriving in numbered tracksuits.',
+        'The video runs the show\'s actual games — Red Light Green Light, the honeycomb candy challenge, tug of war — and eliminated players leave the set.',
+        'The last player standing takes home a real prize of $456,000, which made the video a massive talking point.'
+      ],
+      ja: [
+        'MrBeast（ミスタービースト）がNetflix「イカゲーム」を実際に再現した動画で、456人の参加者が番号入りのトラックスーツで登場します。',
+        '「だるまさんがころんだ」、型抜き（タルゴナ）、綱引きなどドラマのゲームをそのまま行い、脱落者はその場を去ります。',
+        '最後まで残った優勝者には実際に45万6千ドルの賞金が贈られ、大きな話題になりました。'
+      ],
+      zh: [
+        'MrBeast 把 Netflix《鱿鱼游戏》真的复刻了出来，456 名参赛者穿着带编号的运动服登场。',
+        '视频照原样进行了「一二三木头人」、焦糖饼抠图、拔河等剧中的游戏，被淘汰的人当场离开。',
+        '最后的赢家拿到了真实奖金 45.6 万美元，这件事引起了巨大关注。'
+      ],
+      es: [
+        'MrBeast recrea de verdad "El Juego del Calamar" de Netflix, con 456 participantes que llegan con chándales numerados.',
+        'Se juegan los mismos retos de la serie —luz verde, luz roja, la galleta de azúcar, el tira y afloja— y los eliminados abandonan el plató.',
+        'El último jugador se lleva un premio real de 456.000 dólares, algo que dio mucho de qué hablar.'
+      ]
+    }
+  }
+};
+
+/* ==============================
+   3. 상태
+   ============================== */
+let currentLang = 'ko';
+let lastState = null; // { videoId, info, sample }
+
+function t(key) {
+  return (I18N[currentLang] && I18N[currentLang][key]) || I18N.ko[key] || '';
+}
+
+/* ==============================
+   4. 언어 적용
+   ============================== */
+function applyLanguage(lang, opts) {
+  if (!I18N[lang]) lang = 'ko';
+  currentLang = lang;
+  document.documentElement.lang = (lang === 'zh' ? 'zh-CN' : lang);
+  document.title = t('docTitle');
+
+  document.querySelectorAll('[data-i18n]').forEach(function (el) {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+    el.innerHTML = t(el.getAttribute('data-i18n-html'));
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function (el) {
+    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-ph')));
+  });
+  document.querySelectorAll('.lang-btn').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+  });
+
+  var desc = document.querySelector('meta[name="description"]');
+  if (desc) desc.setAttribute('content', t('sub'));
+
+  try { localStorage.setItem('yts_lang', lang); } catch (e) {}
+
+  // 화면에 결과가 떠 있으면 그 결과를 새 언어로 다시 그린다
+  if (lastState && !(opts && opts.skipRender)) renderResult(lastState);
+}
+
+/* ==============================
+   5. 유틸
+   ============================== */
 function extractVideoId(url) {
   if (!url) return '';
   url = url.trim();
-  const regExp = /(?:v=|youtu\.be\/|\/v\/|\/embed\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{11})/;
-  const match = url.match(regExp);
+  var regExp = /(?:v=|youtu\.be\/|\/v\/|\/embed\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{11})/;
+  var match = url.match(regExp);
   if (match && match[1]) return match[1];
-  if (url.length === 11 && !url.includes('/')) return url;
+  if (/^[A-Za-z0-9_-]{11}$/.test(url)) return url;
   return '';
 }
 
-// 클립보드 붙여넣기
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise(function (resolve, reject) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('copy failed'));
+    } catch (e) { reject(e); }
+  });
+}
+
+var toastTimer = null;
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2400);
+}
+
 async function pasteFromClipboard() {
   try {
-    const text = await navigator.clipboard.readText();
+    var text = await navigator.clipboard.readText();
     if (text) {
-      document.getElementById('urlInput').value = text;
-      showToast('클립보드에서 주소가 붙여넣어졌습니다! ✨');
+      document.getElementById('urlInput').value = text.trim();
+      showToast(t('toastPasted'));
+      return;
     }
-  } catch (err) {
+    throw new Error('empty');
+  } catch (e) {
     document.getElementById('urlInput').focus();
-    alert('Ctrl + V 키를 눌러 링크를 붙여넣어 주세요!');
+    alert(t('alertPaste'));
   }
 }
 
-// 샘플 설정
-function setSample(url) {
-  document.getElementById('urlInput').value = url;
-  runSimpleSummary();
+/* ==============================
+   6. 요약 실행
+   ============================== */
+async function fetchVideoInfo(videoId) {
+  try {
+    var resp = await fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v=' + videoId, { cache: 'no-store' });
+    if (!resp.ok) return { ok: false, reason: 'http' };
+    var data = await resp.json();
+    if (!data || data.error) return { ok: false, reason: 'error' };
+    return { ok: true, title: data.title || '', author: data.author_name || '', thumb: data.thumbnail_url || '' };
+  } catch (e) {
+    return { ok: false, reason: 'network' };
+  }
 }
 
-// 실제 요약 실행 함수 (100% 동작 보장)
-async function runSimpleSummary() {
-  const url = document.getElementById('urlInput').value.trim();
-  const videoId = extractVideoId(url);
-
+async function runSummary() {
+  var input = document.getElementById('urlInput');
+  var videoId = extractVideoId(input.value);
   if (!videoId) {
-    alert('올바른 유튜브 영상 주소(링크)를 넣어주세요!\n예: https://www.youtube.com/watch?v=...');
-    document.getElementById('urlInput').focus();
+    alert(t('alertBadUrl'));
+    input.focus();
     return;
   }
 
-  // UI 상태 변경: 로딩 시작
-  const loadBox = document.getElementById('loadingBox');
-  const resBox = document.getElementById('resultBox');
-  const startBtn = document.getElementById('startBtn');
+  var loadBox = document.getElementById('loadingBox');
+  var resBox = document.getElementById('resultBox');
+  var startBtn = document.getElementById('startBtn');
 
   loadBox.style.display = 'block';
   resBox.style.display = 'none';
   startBtn.disabled = true;
-  startBtn.style.opacity = '0.6';
 
-  let videoTitle = "유튜브 분석 영상 (" + videoId + ")";
-  let authorName = "유튜브 채널";
-  let thumbUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+  var info = await fetchVideoInfo(videoId);
+  var sample = SAMPLES[videoId] || null;
 
-  // 1단계: noembed API로 영상 정보 실시간 추출 (CORS 완전 지원)
-  try {
-    const resp = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`, { cache: 'no-store' });
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data.title) videoTitle = data.title;
-      if (data.author_name) authorName = data.author_name;
-      if (data.thumbnail_url) thumbUrl = data.thumbnail_url;
-    }
-  } catch (e) {
-    console.log("NoEmbed fallback active:", e);
+  loadBox.style.display = 'none';
+  startBtn.disabled = false;
+
+  lastState = {
+    videoId: videoId,
+    kind: sample ? 'sample' : (info.ok ? 'info' : 'notfound'),
+    info: info,
+    sample: sample
+  };
+  resBox.style.display = 'block';
+  renderResult(lastState);
+  resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  showToast(sample ? t('toastSampleDone') : t('toastIgnored'));
+}
+
+function renderResult(state) {
+  var step3 = document.getElementById('step3Text');
+  var summaryCard = document.getElementById('summaryCard');
+  var noticeCard = document.getElementById('noticeCard');
+  var copyBtn = document.getElementById('copyBtn');
+  var resBox = document.getElementById('resultBox');
+
+  // 영상 정보
+  var title = '';
+  var author = '';
+  var thumb = 'https://img.youtube.com/vi/' + state.videoId + '/mqdefault.jpg';
+
+  if (state.info && state.info.ok) {
+    title = state.info.title;
+    author = state.info.author;
+    if (state.info.thumb) thumb = state.info.thumb;
+  } else if (state.sample) {
+    title = state.sample.title;
+    author = state.sample.author;
+  } else {
+    title = t('unknownTitle');
+    author = t('unknownAuthor');
   }
 
-  // 2단계: 핵심 요약 추출 (1.2초 후 자연스럽게 완료)
-  setTimeout(() => {
-    // 제목 및 키워드 기반 스마트 요약 엔진
-    let s1, s2, s3;
-    const lower = videoTitle.toLowerCase();
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resAuthor').textContent = author ? '📺 ' + author : '';
+  var img = document.getElementById('resThumb');
+  img.src = thumb;
+  img.alt = title;
 
-    if (lower.includes('주식') || lower.includes('코인') || lower.includes('투자') || lower.includes('매매')) {
-      s1 = `핵심 지표 분석: 단기 변동성에 흔들리지 않고 거시 추세선과 거래량 급증 구간에만 진입하는 것이 승률의 핵심입니다.`;
-      s2 = `손익비 원칙: 1회 손실은 계좌의 1%로 엄격히 제한하고, 수익은 2% 이상으로 길게 끌고 가는 비대칭 손익비를 완성했습니다.`;
-      s3 = `실행 지침: 남들이 공포에 팔 때 기준선 반등을 확인하고 진입하며, 욕심을 버리고 분할 익절하는 원칙 매매를 강조합니다.`;
-    } else if (lower.includes('ai') || lower.includes('인공지능') || lower.includes('챗gpt') || lower.includes('기술')) {
-      s1 = `기술 혁명: AI 도구를 사용하는 사람과 그렇지 않은 사람 간의 생산성 격차가 10배 이상 벌어지고 있습니다.`;
-      s2 = `시간 단축 치트키: 복잡한 1시간짜리 수작업을 자동화 툴과 프롬프트 하나로 3초 만에 끝내는 실전 프로세스를 공개했습니다.`;
-      s3 = `핵심 결론: 도구를 두려워하지 말고 지금 당장 내 일상과 업무에 1개씩 적용하여 시간과 수익을 극대화해야 합니다.`;
-    } else if (lower.includes('never gonna give you up') || lower.includes('rick astley')) {
-      s1 = `글로벌 메가 히트: 1987년 25개국 1위를 휩쓸며 1,500만 장 이상 판매된 전설적인 불후의 팝 명곡입니다.`;
-      s2 = `불멸의 헌신: '너를 절대 포기하지 않고, 실망시키지 않겠다'는 감동적이고 직설적인 순애보적 메시지를 담고 있습니다.`;
-      s3 = `인터넷 문화의 상징: 유튜브 조회수 15억 회를 돌파하며 40년이 지난 지금까지 전 세계인들에게 사랑받는 밈이자 희망의 찬가입니다.`;
+  if (state.kind === 'sample') {
+    var lines = state.sample.lines[currentLang] || state.sample.lines.ko;
+    document.getElementById('sum1').textContent = lines[0];
+    document.getElementById('sum2').textContent = lines[1];
+    document.getElementById('sum3').textContent = lines[2];
+    summaryCard.style.display = 'block';
+    noticeCard.style.display = 'none';
+    copyBtn.style.display = 'flex';
+    step3.setAttribute('data-i18n', 'step3ok');
+    step3.textContent = t('step3ok');
+  } else {
+    summaryCard.style.display = 'none';
+    copyBtn.style.display = 'none';
+    noticeCard.style.display = 'block';
+    step3.setAttribute('data-i18n', 'step3info');
+    step3.textContent = t('step3info');
+    if (state.kind === 'notfound') {
+      document.getElementById('noticeTitle').textContent = t('notFoundTitle');
+      document.getElementById('noticeBody').textContent = t('notFoundBody');
+      document.getElementById('noticeFoot').textContent = t('notFoundFoot');
     } else {
-      s1 = `핵심 배경: 영상 제작자가 전하고자 하는 가장 본질적인 주제는 시간을 아끼고 효율성을 극대화하는 실전 전략입니다.`;
-      s2 = `주요 내용: 불필요한 군더더기와 지루한 설명을 모두 걷어내고, 지금 즉시 적용할 수 있는 핵심 솔루션 3가지를 제시했습니다.`;
-      s3 = `최종 결론: 1시간 동안 영상을 다 볼 필요 없이, 추출된 핵심 행동 지침을 내 업무와 생활에 즉시 실행하는 것이 최선입니다.`;
+      document.getElementById('noticeTitle').textContent = t('noticeTitle');
+      document.getElementById('noticeBody').textContent = t('noticeBody');
+      document.getElementById('noticeFoot').textContent = t('noticeFoot');
     }
+  }
 
-    // 결과 UI 바인딩
-    document.getElementById('resThumb').src = thumbUrl;
-    document.getElementById('resTitle').innerText = videoTitle;
-    document.getElementById('resAuthor').innerText = "📺 " + authorName;
-
-    document.getElementById('sum1').innerText = s1;
-    document.getElementById('sum2').innerText = s2;
-    document.getElementById('sum3').innerText = s3;
-
-    // 로딩 종료 및 결과 출력
-    loadBox.style.display = 'none';
-    resBox.style.display = 'block';
-    startBtn.disabled = false;
-    startBtn.style.opacity = '1';
-
-    showToast('✨ 3초 만에 핵심 요약이 완료되었습니다!');
-    resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 1200);
+  copyBtn.classList.remove('copied');
+  copyBtn.querySelector('span').textContent = t('copyBtn');
 }
 
-// 결과 복사 함수
+/* ==============================
+   7. 복사
+   ============================== */
 function copyResult() {
-  const title = document.getElementById('resTitle').innerText;
-  const s1 = document.getElementById('sum1').innerText;
-  const s2 = document.getElementById('sum2').innerText;
-  const s3 = document.getElementById('sum3').innerText;
+  if (!lastState || lastState.kind !== 'sample') return;
 
-  const copyText = `📌 [유튜브 3초 핵심 요약]\n${title}\n\n1. ${s1}\n2. ${s2}\n3. ${s3}\n\n⚡ 3초 요약기 무료 체험 링크: https://your-link-here.com`;
+  var title = document.getElementById('resTitle').textContent;
+  var l1 = document.getElementById('sum1').textContent;
+  var l2 = document.getElementById('sum2').textContent;
+  var l3 = document.getElementById('sum3').textContent;
 
-  navigator.clipboard.writeText(copyText).then(() => {
-    const btn = document.getElementById('copyBtn');
-    const orig = btn.innerText;
-    btn.innerText = '✅ 복사 완료! (카톡/메모장에 붙여넣으세요)';
+  var text = t('copyHeader') + '\n' + title + '\n\n1. ' + l1 + '\n2. ' + l2 + '\n3. ' + l3 +
+             '\n\n' + t('copyLinkLabel') + ' ' + SITE_URL;
+
+  copyText(text).then(function () {
+    var btn = document.getElementById('copyBtn');
+    btn.querySelector('span').textContent = t('copyDone');
     btn.classList.add('copied');
-    showToast('클립보드에 요약본이 복사되었습니다! ✨');
-    setTimeout(() => {
-      btn.innerText = orig;
+    showToast(t('toastCopied'));
+    setTimeout(function () {
+      btn.querySelector('span').textContent = t('copyBtn');
       btn.classList.remove('copied');
-    }, 2000);
+    }, 2200);
+  }).catch(function () {
+    showToast(t('alertCopyFail'));
   });
 }
 
-// 계좌 복사
-function copyBank() {
-  const bankStr = "(비공개)";
-  navigator.clipboard.writeText(bankStr).then(() => {
-    showToast('양철배 캡틴 계좌가 복사되었습니다! ✨');
+function copyKakao() {
+  copyText(KAKAO_ID).then(function () {
+    showToast(t('toastKakao'));
+  }).catch(function () {
+    showToast(t('alertCopyFail'));
   });
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.innerText = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
+/* ==============================
+   8. 초기화
+   ============================== */
+document.addEventListener('DOMContentLoaded', function () {
+  // 언어 버튼
+  document.querySelectorAll('.lang-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      applyLanguage(btn.getAttribute('data-lang'));
+    });
+  });
+
+  // 샘플 버튼
+  document.querySelectorAll('.sample-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.getElementById('urlInput').value = 'https://www.youtube.com/watch?v=' + btn.getAttribute('data-sample');
+      runSummary();
+    });
+  });
+
+  // ?lang= 지원 + 저장된 언어
+  var params = new URLSearchParams(location.search);
+  var lang = params.get('lang');
+  if (!lang) {
+    try { lang = localStorage.getItem('yts_lang'); } catch (e) {}
+  }
+  if (!I18N[lang]) {
+    var nav = (navigator.language || 'ko').slice(0, 2).toLowerCase();
+    lang = I18N[nav] ? nav : 'ko';
+  }
+  applyLanguage(lang, { skipRender: true });
+});
 </script>
 
 </body>
